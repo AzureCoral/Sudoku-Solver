@@ -1,8 +1,9 @@
 import numpy as np
+import csv
+import argparse
 
 COOLING_RATE = 0.99
 NUM_ITERATIONS = 1000
-
 
 def valid_rows(grid):
     for i in range(9):
@@ -125,18 +126,20 @@ def solve(grid: np.ndarray):
 
     return grid_init
 
+def parse_csv(file_path):
+    with open(file_path, 'r') as f:
+        reader = csv.reader(f)
+        grid = []
+        for row in reader:
+            grid.append(row)
+    return np.array(grid, dtype=int)
+
 if __name__ == '__main__':
-    grid = np.array([
-        [0, 5, 9, 7, 0, 4, 0, 0, 0],
-        [7, 4, 0, 0, 0, 0, 6, 5, 0],
-        [0, 0, 0, 2, 5, 0, 0, 7, 0],
-        [0, 0, 0, 0, 0, 3, 0, 0, 0],
-        [2, 3, 8, 6, 4, 7, 0, 0, 0],
-        [0, 0, 0, 0, 0, 2, 3, 0, 8],
-        [0, 7, 6, 3, 0, 0, 2, 0, 0],
-        [0, 9, 0, 0, 0, 0, 0, 3, 0],
-        [1, 0, 3, 0, 7, 5, 0, 8, 0]
-    ])
+    parser = argparse.ArgumentParser(description="Sudoku Solver")
+    parser.add_argument('file_path', type=str, help='Path to the input csv file', required=True)
+    args = parser.parse_args()
+
+    grid = parse_csv(args.file_path)
 
     assert valid_sudoku(grid), 'Invalid Input Sudoku'
     solved_grid = solve(grid)
