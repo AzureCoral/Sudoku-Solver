@@ -3,7 +3,7 @@ import csv
 import argparse
 
 COOLING_RATE = 0.99
-NUM_ITERATIONS = 1000
+NUM_ITERATIONS = 2000
 
 def valid_rows(grid):
     for i in range(9):
@@ -136,11 +136,12 @@ def parse_csv(file_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Sudoku Solver")
-    parser.add_argument('file_path', type=str, help='Path to the input csv file', required=True)
+    parser.add_argument('file_path', type=str, help='Path to the input csv file')
     args = parser.parse_args()
 
     grid = parse_csv(args.file_path)
 
+    display_grid(grid)
     assert valid_sudoku(grid), 'Invalid Input Sudoku'
     solved_grid = solve(grid)
     display_grid(solved_grid)
