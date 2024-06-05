@@ -6,6 +6,16 @@ COOLING_RATE = 0.99
 NUM_ITERATIONS = 2000
 
 def valid_rows(grid):
+    """
+    Check if all rows are valid for a solved Sudoku
+
+    Args:
+        grid: np.ndarray - 9x9 grid representing the Sudoku
+
+    Returns:
+        bool: True if all rows are valid, False otherwise
+    """
+
     for i in range(9):
         row = grid[i, :]
         non_zero_values = row[row != 0]
@@ -14,6 +24,16 @@ def valid_rows(grid):
     return True
 
 def valid_cols(grid):
+    """
+    Check if all columns are valid for a solved Sudoku
+
+    Args:
+        grid: np.ndarray - 9x9 grid representing the Sudoku
+
+    Returns:
+        bool: True if all columns are valid, False otherwise
+    """
+
     for i in range(9):
         col = grid[:, i]
         non_zero_values = col[col != 0]
@@ -22,6 +42,16 @@ def valid_cols(grid):
     return True
 
 def valid_blocks(grid):
+    """
+    Check if all blocks are valid for a solved Sudoku
+
+    Args:
+        grid: np.ndarray - 9x9 grid representing the Sudoku
+
+    Returns:
+        bool: True if all blocks are valid, False otherwise
+    """
+
     for i in range(0, 9, 3):
         for j in range(0, 9, 3):
             block = grid[i:i+3, j:j+3]
@@ -31,9 +61,29 @@ def valid_blocks(grid):
     return True
 
 def valid_sudoku(grid):
+    """
+    Check if a Sudoku is valid
+
+    Args:
+        grid: np.ndarray - 9x9 grid representing the Sudoku
+
+    Returns:
+        bool: True if the Sudoku is valid, False otherwise
+    """
+
     return valid_rows(grid) and valid_cols(grid) and valid_blocks(grid)
 
 def display_grid(grid: np.ndarray):
+    """
+    Display the Sudoku grid
+
+    Args:
+        grid: np.ndarray - 9x9 grid representing the Sudoku
+
+    Returns:
+        None
+    """
+
     for i in range(9):
         if i % 3 == 0:
             print_border()
@@ -49,15 +99,47 @@ def display_grid(grid: np.ndarray):
     print_border()
 
 def print_border():
+    """
+    Print the border of the Sudoku grid
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+
     print('+---+---+---+---+---+---+')
 
 def cost_function(grid: np.ndarray):
+    """
+    Calculate the cost of a Sudoku grid
+
+    Args:
+        grid: np.ndarray - 9x9 grid representing the Sudoku
+
+    Returns:
+        int: Cost of the Sudoku grid
+    """
+
     cost = 0
     for i in range(9):
         cost += abs(9 - len(np.unique(grid[i, :]))) + abs(9 - len(np.unique(grid[:, i])))
     return cost
 
 def swap_vals(grid, region, fixed_coords):
+    """
+    Swap two random unseen values in a region of the Sudoku grid
+
+    Args:
+        grid: np.ndarray - 9x9 grid representing the Sudoku
+        region: tuple - (x, y) coordinates of the region
+        fixed_coords: np.ndarray - List of fixed coordinates in the Sudoku grid
+
+    Returns:
+        None
+    """
+
     region_x, region_y = region * 3
     block = np.copy(grid[region_x:region_x+3, region_y:region_y+3])
 
@@ -77,6 +159,16 @@ def swap_vals(grid, region, fixed_coords):
 
 
 def generate_grid(grid):
+    """
+    Generate a new Sudoku grid by filling in the missing values
+
+    Args:
+        grid: np.ndarray - 9x9 grid representing the Sudoku
+
+    Returns:
+        np.ndarray: 9x9 grid representing the Sudoku with missing values filled in
+    """
+
     new_grid = grid.copy()
     for i in range(0, 9, 3):
         for j in range(0, 9, 3):
@@ -90,6 +182,16 @@ def generate_grid(grid):
     return new_grid
 
 def init_temperature(grid):
+    """
+    Initialize the temperature for the simulated annealing algorithm
+
+    Args:
+        grid: np.ndarray - 9x9 grid representing the Sudoku
+
+    Returns:
+        float: Initial temperature
+    """
+
     std_vals = []
     for _ in range(100):
         new_grid = generate_grid(grid)
@@ -97,9 +199,29 @@ def init_temperature(grid):
     return np.std(std_vals)
 
 def fixed_coords(grid):
+    """
+    Get the coordinates of the fixed values in the Sudoku grid
+
+    Args:
+        grid: np.ndarray - 9x9 grid representing the Sudoku
+
+    Returns:
+        np.ndarray: List of fixed coordinates in the Sudoku grid
+    """
+
     return np.argwhere(grid > 0)
 
 def solve(grid: np.ndarray):
+    """
+    Solve the Sudoku using simulated annealing
+
+    Args:
+        grid: np.ndarray - 9x9 grid representing the Sudoku
+
+    Returns:
+        np.ndarray: 9x9 grid representing the solved Sudoku
+    """
+
     temperature = init_temperature(grid)
     grid_init = generate_grid(grid)
 
@@ -127,6 +249,16 @@ def solve(grid: np.ndarray):
     return grid_init
 
 def parse_csv(file_path):
+    """
+    Parse the input csv file
+
+    Args:
+        file_path: str - Path to the input csv file
+
+    Returns:
+        np.ndarray: 9x9 grid representing the Sudoku
+    """
+
     with open(file_path, 'r') as f:
         reader = csv.reader(f)
         grid = []
